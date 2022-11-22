@@ -14,4 +14,10 @@ interface FilesRepository
     public function findById(string $id): ?File;
 
     public function delete(string $id): void;
+
+    /**
+     * @param File[] $files
+     * @return void
+     */
+    public function insertMany(array $files): void;
 }

@@ -53,4 +53,14 @@ class EloquentFilesRepository extends EloquentRepository implements FilesReposit
     {
         $this->remove($id);
     }
+
+    /**
+     * @param File[] $files
+     * @return void
+     */
+    public function insertMany(array $files): void
+    {
+        $primitives = array_map(fn(File $file) => $file->toPrimitives(), $files);
+        $this->builder()->insert($primitives);
+    }
 }

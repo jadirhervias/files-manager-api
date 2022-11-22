@@ -4,15 +4,14 @@ namespace App\Http\Controllers\File;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\FileBulkPostRequest;
-use FilesManager\File\Application\Create\CreateFileRequest;
-use FilesManager\File\Application\Create\FileCreator;
-use FilesManager\File\Domain\FileSizeExceedsLimit;
+use FilesManager\File\Application\BulkMany\BulkFilesRequest;
+use FilesManager\File\Application\BulkMany\FilesBulkCreator;
 use FilesManager\Shared\Domain\UploadFile;
 use Illuminate\Http\JsonResponse;
 
 class FileBulkPostController extends Controller
 {
-    public function __construct(private readonly FileCreator $creator)
+    public function __construct(private readonly FilesBulkCreator $bulkCreator)
     {
     }
 
@@ -25,31 +24,21 @@ class FileBulkPostController extends Controller
      */
     public function __invoke(FileBulkPostRequest $request): JsonResponse
     {
-        $uploads = $request->allFiles()['files'];
-        $totalUploadedFiles = 0;
-        $totalRejectedFiles = 0;
+        $httpUploads = $request->allFiles()['files'];
+        $uploads = [];
 
-        collect($uploads)
-            ->chunkWhile(function (\Illuminate\Http\UploadedFile $upload) use (
-                &$totalRejectedFiles,
-                &$totalUploadedFiles
-            ) {
-                try {
-                    $this->creator->__invoke(new CreateFileRequest(
-                        UploadFile::fromFile($upload)
-                    ));
-                    $totalUploadedFiles++;
-                } catch (FileSizeExceedsLimit $exception) {
-                    $totalRejectedFiles++;
-                    return;
-                }
+        collect($httpUploads)
+            ->chunkWhile(function (\Illuminate\Http\UploadedFile $upload) use (&$uploads) {
+                $uploads[] = UploadFile::fromFile($upload);
             });
+
+        $bulkResponse = $this->bulkCreator->__invoke(new BulkFilesRequest($uploads));
 
         return response()->json([
             'message' => 'Files uploaded successfully',
             'data' => [
-                'total_uploaded' => $totalUploadedFiles,
-                'total_rejected' => $totalRejectedFiles,
+                'total_uploaded' => $bulkResponse->totalUploaded(),
+                'total_rejected' => $bulkResponse->totalRejected(),
             ]
         ], JsonResponse::HTTP_OK);
     }
