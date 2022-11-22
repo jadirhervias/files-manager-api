@@ -5,6 +5,7 @@ namespace FilesManager\Shared\Infrastructure\Persistence\Eloquent;
 use FilesManager\Shared\Domain\AggregateRoot;
 use FilesManager\Shared\Domain\Assert;
 use FilesManager\Shared\Domain\Utils;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -19,6 +20,11 @@ abstract class EloquentRepository
         Assert::childInstanceOf($this->modelClass(), Model::class);
 
         return new ($this->modelClass());
+    }
+
+    public function builder(): Builder
+    {
+        return $this->model()::query();
     }
 
     protected function persist(AggregateRoot $aggregate): void

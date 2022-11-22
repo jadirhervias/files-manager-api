@@ -64,7 +64,7 @@ class UploadFile
 
     public function contents(): string
     {
-        if (null === $this->contents) {
+        if (is_null($this->contents)) {
             throw new LogicException(sprintf(
                 'The contents of file <%s> have not been loaded yet.',
                 $this->filename
