@@ -27,6 +27,12 @@ composer install
 php artisan serve
 ```
 
+#### Metrics page for API
+
+```
+http://<host>/telescope/requests
+```
+
 #### API Endpoints
 
 ```bash
