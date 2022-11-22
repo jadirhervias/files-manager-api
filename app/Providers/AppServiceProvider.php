@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use FilesManager\File\Domain\FilesRepository;
+use FilesManager\File\Infrastructure\Persistence\Eloquent\EloquentFilesRepository;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -23,6 +25,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        $this->app->bind(FilesRepository::class, EloquentFilesRepository::class);
     }
 }
