@@ -6,7 +6,7 @@ use FilesManager\Shared\Domain\DomainError;
 
 class FileNotExists extends DomainError
 {
-    public function __construct(private string $id)
+    public function __construct(private readonly string $id)
     {
         parent::__construct();
     }

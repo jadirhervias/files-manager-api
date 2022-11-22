@@ -22,7 +22,7 @@ class FileDeleter
 
         $file = $this->repository->findById($id);
 
-        if (null === $file) {
+        if (is_null($file)) {
             throw new FileNotExists($id);
         }
 

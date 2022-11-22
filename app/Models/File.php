@@ -10,7 +10,6 @@ class File extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $table = 'files';
     protected $primaryKey = 'id';
     public $incrementing = false;
     protected $keyType = 'string';

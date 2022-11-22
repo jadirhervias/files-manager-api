@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use FilesManager\File\Application\Create\CreateFileRequest;
 use FilesManager\File\Application\Create\FileCreator;
 use FilesManager\Shared\Domain\UploadFile;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class FilePostController extends Controller
@@ -18,14 +19,17 @@ class FilePostController extends Controller
      * Handle the incoming request.
      *
      * @param Request $request
-     * @return array
+     * @return JsonResponse
      */
-    public function __invoke(Request $request): array
+    public function __invoke(Request $request): JsonResponse
     {
         $file = $this->creator->__invoke(new CreateFileRequest(
             UploadFile::fromFile($request->file('file'))
         ));
 
-        return $file->toPrimitives();
+        return response()->json([
+            'message' => 'File uploaded successfully',
+            'file' => $file->toPrimitives()
+        ], JsonResponse::HTTP_CREATED);
     }
 }

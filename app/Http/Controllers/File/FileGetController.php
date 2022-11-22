@@ -5,6 +5,7 @@ namespace App\Http\Controllers\File;
 use App\Http\Controllers\Controller;
 use FilesManager\File\Application\Find\FileFinder;
 use FilesManager\File\Domain\File;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class FileGetController extends Controller
@@ -17,12 +18,16 @@ class FileGetController extends Controller
      * Handle the incoming request.
      *
      * @param Request $request
-     * @return array
+     * @return JsonResponse
      */
-    public function __invoke(Request $request): array
+    public function __invoke(Request $request): JsonResponse
     {
         $files = $this->finder->__invoke();
 
-        return array_map(fn(File $file) => $file->toPrimitives(), $files);
+        $primitiveFiles = array_map(fn(File $file) => $file->toPrimitives(), $files);
+
+        return response()->json([
+            'files' => $primitiveFiles
+        ], JsonResponse::HTTP_CREATED);
     }
 }

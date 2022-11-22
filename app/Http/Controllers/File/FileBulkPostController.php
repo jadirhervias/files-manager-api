@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use FilesManager\File\Application\Create\CreateFileRequest;
 use FilesManager\File\Application\Create\FileCreator;
 use FilesManager\Shared\Domain\UploadFile;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class FileBulkPostController extends Controller
@@ -18,15 +19,11 @@ class FileBulkPostController extends Controller
      * Handle the incoming request.
      *
      * @param Request $request
-     * @return void
+     * @return JsonResponse
      * @throws \Throwable
      */
-    public function __invoke(Request $request): void
+    public function __invoke(Request $request): JsonResponse
     {
-        if (!$request->hasFile('file')) {
-            return;
-        }
-
         $uploads = $request->allFiles()['file'];
 
         collect($uploads)
@@ -35,5 +32,9 @@ class FileBulkPostController extends Controller
                     UploadFile::fromFile($upload)
                 ));
             });
+
+        return response()->json([
+            'message' => 'Files uploaded successfully'
+        ], JsonResponse::HTTP_OK);
     }
 }
