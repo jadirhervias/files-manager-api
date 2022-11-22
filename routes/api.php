@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,13 +13,18 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::prefix('auth')
+    ->group(function () {
+        Route::post('/token', \App\Http\Controllers\Authentication\LoginPostController::class);
+        Route::post('/register', \App\Http\Controllers\Authentication\RegisterPostController::class);
+    });
 
-Route::prefix('files')->group(function() {
-    Route::get('/', \App\Http\Controllers\File\FileGetController::class);
-    Route::post('/', \App\Http\Controllers\File\FilePostController::class);
-    Route::post('/delete/{id}', \App\Http\Controllers\File\FileDeleteController::class);
-    Route::post('/bulk', \App\Http\Controllers\File\FileBulkPostController::class);
-});
+
+Route::prefix('files')
+    ->middleware('jwt.verify')
+    ->group(function () {
+        Route::get('/', \App\Http\Controllers\File\FileGetController::class);
+        Route::post('/', \App\Http\Controllers\File\FilePostController::class);
+        Route::post('/delete/{id}', \App\Http\Controllers\File\FileDeleteController::class);
+        Route::post('/bulk', \App\Http\Controllers\File\FileBulkPostController::class);
+    });
