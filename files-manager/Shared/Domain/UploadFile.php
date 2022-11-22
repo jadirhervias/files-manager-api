@@ -11,7 +11,6 @@ class UploadFile
 {
     private string $filename;
     private ?string $contents = null;
-    private string $contentHash;
     private int $size;
     private DateTimeImmutable $createdAt;
     private DateTimeImmutable $updatedAt;
@@ -44,19 +43,6 @@ class UploadFile
         return self::create($file->getClientOriginalName(), $file->getContent(), $file);
     }
 
-    private function setContents(string $contents): void
-    {
-        $this->contentHash = $this->hashContents($contents);
-        $this->size = \strlen($contents);
-        $this->contents = $contents;
-        $this->updatedAt = EnhancedDateTime::now()->value();
-    }
-
-    private function hashContents(string $contents): string
-    {
-        return \sha1($contents);
-    }
-
     public function filename(): string
     {
         return $this->filename;
@@ -72,11 +58,6 @@ class UploadFile
         }
 
         return $this->contents;
-    }
-
-    public function contentHash(): string
-    {
-        return $this->contentHash;
     }
 
     /**
@@ -111,44 +92,5 @@ class UploadFile
     public function file(): SymfonyFile|SymfonyUploadedFile|null
     {
         return $this->file;
-    }
-
-    public function load(string $contents): self
-    {
-        if ($this->hashContents($contents) !== $this->contentHash) {
-            $newHash = $this->hashContents($contents);
-            throw new LogicException(sprintf(
-                "Attempted to load file '<%s>' with contents that do not match the file\\'s content hash '<%s>'. Hash of supplied contents: '<%s>'.",
-                $this->filename,
-                $this->contentHash,
-                $newHash
-            ));
-        }
-
-        $this->contents = $contents;
-        return $this;
-    }
-
-    public function rename(string $newFilename): self
-    {
-        if ($this->filename === $newFilename) {
-            return $this;
-        }
-
-        $this->filename = $newFilename;
-        $this->updatedAt = EnhancedDateTime::now()->value();
-
-        return $this;
-    }
-
-    public function updateContents(string $newContents): self
-    {
-        if ($this->contentHash === $this->hashContents($newContents)) {
-            return $this;
-        }
-
-        $this->setContents($newContents);
-
-        return $this;
     }
 }

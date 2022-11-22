@@ -18,7 +18,7 @@ class JwtMiddleware
      *
      * @param Request $request
      * @param Closure(Request): (Response|RedirectResponse) $next
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function handle(Request $request, Closure $next)
     {

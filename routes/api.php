@@ -19,7 +19,6 @@ Route::prefix('auth')
         Route::post('/register', \App\Http\Controllers\Authentication\RegisterPostController::class);
     });
 
-
 Route::prefix('files')
     ->middleware('jwt.verify')
     ->group(function () {
