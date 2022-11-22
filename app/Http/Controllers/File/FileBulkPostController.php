@@ -3,12 +3,14 @@
 namespace App\Http\Controllers\File;
 
 use App\Http\Controllers\Controller;
-use App\Jobs\UploadFile;
+use FilesManager\File\Application\Create\CreateFileRequest;
+use FilesManager\File\Application\Create\FileCreator;
+use FilesManager\Shared\Domain\UploadFile;
 use Illuminate\Http\Request;
 
 class FileBulkPostController extends Controller
 {
-    public function __construct()
+    public function __construct(private readonly FileCreator $creator)
     {
     }
 
@@ -21,10 +23,17 @@ class FileBulkPostController extends Controller
      */
     public function __invoke(Request $request): void
     {
-        $uploads = $request->allFiles();
-
-        foreach ($uploads as $upload) {
-            UploadFile::dispatch($upload);
+        if (!$request->hasFile('file')) {
+            return;
         }
+
+        $uploads = $request->allFiles()['file'];
+
+        collect($uploads)
+            ->chunkWhile(function (\Illuminate\Http\UploadedFile $upload) {
+                $this->creator->__invoke(new CreateFileRequest(
+                    UploadFile::fromFile($upload)
+                ));
+            });
     }
 }
