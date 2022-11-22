@@ -22,6 +22,9 @@ cp .env.example .env
 composer install
 
 # Migrations were already executed
+
+# Run application
+php artisan serve
 ```
 
 #### API Endpoints
