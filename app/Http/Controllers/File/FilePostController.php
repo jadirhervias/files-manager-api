@@ -31,7 +31,9 @@ class FilePostController extends Controller
 
             return response()->json([
                 'message' => 'File uploaded successfully',
-                'file' => $file->toPrimitives()
+                'data' => [
+                    'file' => $file->toPrimitives()
+                ]
             ], JsonResponse::HTTP_CREATED);
         } catch (FileSizeExceedsLimit $exception) {
             return response()->json(

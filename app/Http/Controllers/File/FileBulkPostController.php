@@ -47,8 +47,10 @@ class FileBulkPostController extends Controller
 
         return response()->json([
             'message' => 'Files uploaded successfully',
-            'total_uploaded' => $totalUploadedFiles,
-            'total_rejected' => $totalRejectedFiles,
+            'data' => [
+                'total_uploaded' => $totalUploadedFiles,
+                'total_rejected' => $totalRejectedFiles,
+            ]
         ], JsonResponse::HTTP_OK);
     }
 }

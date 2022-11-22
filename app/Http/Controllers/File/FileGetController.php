@@ -27,7 +27,7 @@ class FileGetController extends Controller
         $primitiveFiles = array_map(fn(File $file) => $file->toPrimitives(), $files);
 
         return response()->json([
-            'files' => $primitiveFiles
+            'data' => $primitiveFiles
         ], JsonResponse::HTTP_CREATED);
     }
 }

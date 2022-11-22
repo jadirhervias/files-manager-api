@@ -36,8 +36,10 @@ class RegisterPostController extends Controller
 
         return response()->json([
             'message' => 'User created successfully',
-            'user' => $user->toPrimitives(),
-            'token' => $token
+            'data' => [
+                'user' => $user->toPrimitives(),
+                'token' => $token
+            ]
         ], JsonResponse::HTTP_CREATED);
     }
 }

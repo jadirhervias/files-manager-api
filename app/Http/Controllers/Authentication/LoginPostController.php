@@ -36,7 +36,9 @@ class LoginPostController extends Controller
 
         return response()->json([
             'message' => 'Logged successfully',
-            'token' => $token,
+            'data' => [
+                'token' => $token,
+            ]
         ], JsonResponse::HTTP_OK);
     }
 }
