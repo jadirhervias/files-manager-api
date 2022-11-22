@@ -3,10 +3,11 @@
 namespace App\Http\Controllers\File;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\FileDeleteRequest;
 use FilesManager\File\Application\Delete\DeleteFileRequest;
 use FilesManager\File\Application\Delete\FileDeleter;
+use FilesManager\File\Domain\FileNotExists;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 class FileDeleteController extends Controller
 {
@@ -17,18 +18,25 @@ class FileDeleteController extends Controller
     /**
      * Handle the incoming request.
      *
-     * @param Request $request
+     * @param FileDeleteRequest $request
      * @return JsonResponse
      */
-    public function __invoke(Request $request): JsonResponse
+    public function __invoke(FileDeleteRequest $request): JsonResponse
     {
-        $this->deleter->__invoke(new DeleteFileRequest(
-            $request->route('id'),
-            $request->boolean('is_permanent')
-        ));
+        try {
+            $this->deleter->__invoke(new DeleteFileRequest(
+                $request->route('id'),
+                $request->boolean('is_permanent')
+            ));
 
-        return response()->json([
-            'message' => 'File deleted successfully'
-        ], JsonResponse::HTTP_NO_CONTENT);
+            return response()->json([
+                'message' => 'File deleted successfully'
+            ], JsonResponse::HTTP_OK);
+        } catch (FileNotExists $exception) {
+            return response()->json(
+                $exception->toArray(),
+                JsonResponse::HTTP_NOT_FOUND
+            );
+        }
     }
 }

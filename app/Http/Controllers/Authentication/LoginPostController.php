@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Authentication;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\LoginPostRequest;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
 
@@ -13,16 +13,11 @@ class LoginPostController extends Controller
     /**
      * Handle the incoming request.
      *
-     * @param Request $request
+     * @param LoginPostRequest $request
      * @return JsonResponse
      */
-    public function __invoke(Request $request): JsonResponse
+    public function __invoke(LoginPostRequest $request): JsonResponse
     {
-        $request->validate([
-            'email' => 'required|string|email',
-            'password' => 'required|string',
-        ]);
-
         $credentials = $request->only('email', 'password');
 
         try {

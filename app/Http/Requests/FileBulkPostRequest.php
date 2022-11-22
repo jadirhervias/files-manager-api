@@ -2,9 +2,9 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
+use FilesManager\File\Domain\File;
 
-class LoginPostRequest extends FormRequest
+class FileBulkPostRequest extends ApiRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,8 +24,7 @@ class LoginPostRequest extends FormRequest
     public function rules()
     {
         return [
-            'email' => 'required|string|email',
-            'password' => 'required|string',
+            'files.*' => 'required|max:'.File::MAX_BYTES,
         ];
     }
 }

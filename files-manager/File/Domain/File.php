@@ -7,6 +7,8 @@ use FilesManager\Shared\Domain\EnhancedDateTime;
 
 class File extends AggregateRoot
 {
+    const MAX_BYTES = 500 * 1024;
+
     public function __construct(
         private readonly string  $id,
         private readonly string  $filename,
@@ -85,6 +87,11 @@ class File extends AggregateRoot
     {
         $this->deletedAt = EnhancedDateTime::now()->format();
         $this->status = FileStatuses::HIDDEN;
+    }
+
+    public function exceedsMaxSize(): bool
+    {
+        return $this->size > self::MAX_BYTES;
     }
 
     public function toPrimitives(): array

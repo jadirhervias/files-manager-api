@@ -43,6 +43,13 @@ class UploadFile
         return self::create($file->getClientOriginalName(), $file->getContent(), $file);
     }
 
+    private function setContents(string $contents): void
+    {
+        $this->size = \strlen($contents);
+        $this->contents = $contents;
+        $this->updatedAt = EnhancedDateTime::now()->value();
+    }
+
     public function filename(): string
     {
         return $this->filename;

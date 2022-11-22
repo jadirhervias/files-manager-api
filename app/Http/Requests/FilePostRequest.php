@@ -2,9 +2,9 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
+use FilesManager\File\Domain\File;
 
-class FilePostRequest extends FormRequest
+class FilePostRequest extends ApiRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -13,7 +13,7 @@ class FilePostRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,8 +24,7 @@ class FilePostRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'string|max:255',
-            'size' => 'nullable'
+            'file' => 'required|max:'.File::MAX_BYTES,
         ];
     }
 }

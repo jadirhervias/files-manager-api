@@ -2,9 +2,7 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
-
-class LoginPostRequest extends FormRequest
+class FileDeleteRequest extends ApiRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,8 +22,7 @@ class LoginPostRequest extends FormRequest
     public function rules()
     {
         return [
-            'email' => 'required|string|email',
-            'password' => 'required|string',
+            'is_permanent' => 'boolean',
         ];
     }
 }

@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\Authentication;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\RegisterPostRequest;
 use App\Models\User;
 use FilesManager\User\Application\Create\CreateUserRequest;
 use FilesManager\User\Application\Create\UserCreator;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use JWTAuth;
 
@@ -20,17 +20,11 @@ class RegisterPostController extends Controller
     /**
      * Handle the incoming request.
      *
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @param RegisterPostRequest $request
+     * @return JsonResponse
      */
-    public function __invoke(Request $request): \Illuminate\Http\JsonResponse
+    public function __invoke(RegisterPostRequest $request): JsonResponse
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:6',
-        ]);
-
         $user = $this->creator->__invoke(new CreateUserRequest(
             $request->input('name'),
             $request->input('email'),
